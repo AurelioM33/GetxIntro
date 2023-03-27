@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getx_intro/user_controller.dart';
 
 void main() {
-  //Get.put<UserController>(UserController());
-
-  Get.lazyPut<UserController>(() => UserController());
-
   runApp(const MyApp());
 }
 
@@ -15,96 +10,59 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }
 
 class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
-
-  final nameController = TextEditingController();
-  final ageController = TextEditingController();
-
-  final UserController userController = Get.find();
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Navegação!'),
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                // Campo de nome
-                Expanded(
-                  child: TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Nome',
-                    ),
+            const Expanded(
+              child: Center(
+                // Apresentação de valor
+                child: Text(
+                  'Valor: ',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-
-                // Botão para salvar o nome
-                ElevatedButton(
-                  onPressed: () {
-                    userController.setUserName(nameController.text);
-                  },
-                  child: const Text('Salvar'),
-                ),
-              ],
+              ),
             ),
 
-            // Espaçamento
-            const SizedBox(height: 10),
-
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                // Campo de idade
-                Expanded(
-                  child: TextField(
-                    controller: ageController,
-                    decoration: const InputDecoration(
-                      labelText: 'Idade',
-                    ),
-                  ),
-                ),
-
-                // Botão para salvar a idade
-                ElevatedButton(
-                  onPressed: () {
-                    userController.setUserAge(int.parse(ageController.text));
-                  },
-                  child: const Text('Salvar'),
-                ),
-              ],
-            ),
-
-            // Espaçamento
-            const SizedBox(height: 10),
-
+            // Botão para navegação
             ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
+              onPressed: () async {
+                /*final result = await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) {
                       return DataScreen();
                     },
                   ),
-                );
+                );*/
+
+                final result = await Get.to(() => DataScreen());
+                print(result);
               },
-              child: const Text('Tela de dados'),
+              child: const Text('Segunda tela'),
             ),
           ],
         ),
@@ -114,37 +72,40 @@ class HomePage extends StatelessWidget {
 }
 
 class DataScreen extends StatelessWidget {
-  DataScreen({
-    Key? key,
-  }) : super(key: key);
+  DataScreen({Key? key}) : super(key: key);
 
-  TextStyle commonStyle() => const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.w700,
-      );
+  final textController = TextEditingController();
 
-  final UserController controller = Get.find();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dados'),
+        title: const Text('Definição de dado'),
+        centerTitle: true,
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Apresentação do nome
-            Obx(() => Text(
-                  'Nome: ${controller.user.value.name}',
-                  style: commonStyle(),
-                )),
+            // Campo de definição de valor
+            TextField(
+              controller: textController,
+            ),
 
-            // Apresentação da idade
-            Obx(() => Text(
-                  'idade: ${controller.user.value.age}',
-                  style: commonStyle(),
-                )),
+            // Espaçamento
+            const SizedBox(height: 10),
+
+            // Botão para voltar passando o valor
+            ElevatedButton(
+              onPressed: () {
+                final value = textController.text;
+
+                //Navigator.of(context).pop(value);
+                Get.back(result: value);
+              },
+              child: const Text('Retornar'),
+            ),
           ],
         ),
       ),
