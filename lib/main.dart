@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 
 void main() {
   runApp(const MyApp());
+
+
+
 }
 
 class MyApp extends StatelessWidget {
@@ -51,16 +54,10 @@ class HomePage extends StatelessWidget {
             // Botão para navegação
             ElevatedButton(
               onPressed: () async {
-                /*final result = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return DataScreen();
-                    },
-                  ),
-                );*/
-
+                
                 final result = await Get.to(() => DataScreen());
-                print(result);
+
+                debugPrint(result);
               },
               child: const Text('Segunda tela'),
             ),
